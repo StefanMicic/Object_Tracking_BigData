@@ -1,7 +1,7 @@
-import os
+# import os
 
-from loguru import logger as log
-from processing.data_joining import Reader
+# from loguru import logger as log
+# from processing.data_joining import Reader
 from pyspark import SparkConf, SparkContext
 from pyspark.sql import SparkSession
 
@@ -25,7 +25,7 @@ def quiet_logs(sc):
 
 
 def main():
-    HDFS_NAMENODE = os.environ["CORE_CONF_fs_defaultFS"]
+    # HDFS_NAMENODE = os.environ["CORE_CONF_fs_defaultFS"]
 
     conf = (
         SparkConf()
