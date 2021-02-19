@@ -10,7 +10,9 @@ services:
     environment:
       - CLUSTER_NAME=test
     env_file:
-      - ./hadoop.env
+      - ./hadoop.env 
+    volumes: 
+      - ../data.csv:/home/data.csv
     ports:
       - 9870:9870
       - 9000:9000
@@ -48,7 +50,11 @@ services:
       - ./hadoop.env
     volumes:
       - ../real_time.py:/spark/real_time.py
-
+      - ../task1.py:/spark/task1.py
+      - ../task2.py:/spark/task2.py
+      - ../task3.py:/spark/task3.py
+      - ../task4.py:/spark/task4.py
+      - ../task5.py:/spark/task5.py
   spark-worker1:
     image: bde2020/spark-worker:2.4.0-hadoop3.1
     container_name: spark-worker1
@@ -96,19 +102,39 @@ services:
     container_name: kafka_producer_1
     environment: 
       KAFKA_BROKER: "kafka1:19092"
-      SUBREDDIT: "politics"
+      TOPIC: "room-1"
     depends_on: 
       - kafka1
 
-  producer2:
-    build: ./producer
-    container_name: kafka_producer_2
-    environment: 
-      KAFKA_BROKER: "kafka1:19092"
-      SUBREDDIT: "worldnews"
-    depends_on: 
-      - kafka1
-    
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=asvsp
+      - MONGO_INITDB_ROOT_PASSWORD=asvsp
+      - MONGO_INITDB_DATABASE=asvsp
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8085:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=asvsp
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=asvsp
+    depends_on:
+      - mongo
+  
+  flask_app:
+    build: ../flask_app
+    container_name: flask_app
+    ports:
+      - 5000:5000
 
 volumes:
   hadoop_namenode:

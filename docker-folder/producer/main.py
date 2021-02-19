@@ -7,9 +7,8 @@ import kafka.errors
 import pandas as pd
 from kafka import KafkaProducer
 
-SUBREDDIT = os.environ["SUBREDDIT"]
+TOPIC = os.environ["TOPIC"]
 KAFKA_BROKER = os.environ["KAFKA_BROKER"]
-TOPIC = "subreddit-" + SUBREDDIT
 
 while True:
     try:
@@ -21,14 +20,14 @@ while True:
         time.sleep(3)
 
 
-data = pd.read_csv("./train.csv")
+data = pd.read_csv("./proba.csv")
 for index, row in data.iterrows():
-    if index % 2 == 0 and TOPIC == "subreddit-worldnews":
-        continue
-    elif index % 2 != 0 and TOPIC == "subreddit-politics":
-        continue
-    print("SALJEM", TOPIC, index, row.text)
+    print(TOPIC, str(row))
+    data_str = f"{row.person_id} {row.x_min} {row.y_min} {row.x_max} {row.y_max} {row.room_name}"  # noqa E501
     producer.send(
-        TOPIC, key=bytes(str(index), "utf-8"), value=bytes(row.text, "utf-8"),
+        TOPIC,
+        key=bytes(str(index), "utf-8"),
+        value=bytes(data_str, "utf-8"),
     )
-    time.sleep(1)
+    if index % 3 == 0:
+        time.sleep(1)

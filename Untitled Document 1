@@ -1,0 +1,4 @@
+bin/spark-submit --conf "spark.mongodb.input.uri=mongodb://asvsp:asvsp@mongo:27017/asvsp.task2?authSource=admin" \
+              --conf "spark.mongodb.output.uri=mongodb://asvsp:asvsp@mongo:27017/asvsp.task2?authSource=admin&retryWrites=true" \
+               --packages org.mongodb.spark:mongo-spark-connector_2.11:2.2.3 task2.py
+               
